@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/st0nkingst1ngray/prompt-trapdoor/schema/usage-event.json",
+  "title": "GrokUsageEvent",
+  "description": "Self-reported usage and context estimate for one bot task run. This is not a Cursor billing record.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "ts",
+    "bot_id",
+    "bot_name",
+    "task",
+    "run_kind",
+    "status",
+    "source"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "bot_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "bot_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "task": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "run_kind": {
+      "enum": ["chat", "routine", "webhook", "cloud_agent", "other"]
+    },
+    "status": {
+      "enum": ["ok", "fail", "partial"]
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "estimates": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tokens_in": { "type": ["integer", "null"], "minimum": 0 },
+        "tokens_out": { "type": ["integer", "null"], "minimum": 0 },
+        "agent_steps": { "type": ["integer", "null"], "minimum": 0 },
+        "context_chars": { "type": ["integer", "null"], "minimum": 0 },
+        "attachments_bytes": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "source": {
+      "enum": ["cli", "skill", "manual"]
+    }
+  }
+}

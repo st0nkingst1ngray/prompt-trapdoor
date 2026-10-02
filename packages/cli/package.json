@@ -1,0 +1,16 @@
+{
+  "name": "@grok-usage/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "grok-usage": "./bin/grok-usage.mjs"
+  },
+  "dependencies": {
+    "@grok-usage/schema": "0.1.0",
+    "tsx": "^4.20.3"
+  },
+  "scripts": {
+    "test": "tsx --test test/**/*.test.ts"
+  }
+}
