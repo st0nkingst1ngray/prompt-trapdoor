@@ -1,8 +1,9 @@
 {
-  "name": "grok-usage",
+  "name": "prompt-trapdoor",
   "private": true,
   "version": "0.1.0",
-  "description": "Self-reported usage ledger for Grok Bot work. Estimates, not billing.",
+  "type": "module",
+  "description": "Prompt Trapdoor games, plus a self-reported Grok Usage ledger. Estimates, not billing.",
   "engines": {
     "node": ">=20"
   },
@@ -11,8 +12,12 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "vite",
+    "game": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "npm run test -w @grok-usage/schema && npm run test -w @grok-usage/cli && tsx --test apps/dashboard/src/view.test.ts",
-    "typecheck": "tsc -p packages/schema && tsc -p packages/cli && tsc -p apps/dashboard",
+    "typecheck": "tsc -p tsconfig.json && tsc -p packages/schema && tsc -p packages/cli && tsc -p apps/dashboard",
     "seed": "node scripts/seed-events.mjs",
     "demo": "node scripts/demo.mjs",
     "dashboard": "npm run dev -w @grok-usage/dashboard",
@@ -21,6 +26,7 @@
   "devDependencies": {
     "@types/node": "^22.15.21",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.2.0"
   }
 }

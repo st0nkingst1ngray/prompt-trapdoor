@@ -1,0 +1,414 @@
+:root {
+  --bg: #0b0e14;
+  --panel: #141a24;
+  --panel-2: #1a2230;
+  --border: #2a3548;
+  --text: #f2f5fa;
+  --muted: #9aa8bc;
+  --accent: #5eead4;
+  --accent-dim: #2dd4bf33;
+  --warn: #fbbf24;
+  --danger: #fb7185;
+  --ok: #4ade80;
+  --btn: #2563eb;
+  --btn-hover: #3b82f6;
+  --locked: #334155;
+  --radius: 14px;
+  --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+body {
+  line-height: 1.45;
+}
+
+#app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.screen {
+  display: none;
+}
+.screen.active {
+  display: block;
+}
+
+/* Hub */
+.hub-header {
+  text-align: center;
+  padding: 1.5rem 0 1rem;
+}
+.hub-header h1 {
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  background: linear-gradient(90deg, var(--accent), #93c5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hub-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin-top: 1.25rem;
+}
+.tile {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.2rem;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s, background 0.15s;
+  min-height: 110px;
+  width: 100%;
+  font: inherit;
+}
+.tile:hover:not(:disabled) {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  background: var(--panel-2);
+}
+.tile:disabled,
+.tile.locked {
+  cursor: not-allowed;
+  opacity: 0.55;
+  border-color: var(--locked);
+}
+.tile .emoji {
+  font-size: 1.6rem;
+}
+.tile .title {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-top: 0.35rem;
+}
+.tile .sub {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 0.25rem;
+}
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  margin-top: 0.5rem;
+}
+.badge.locked {
+  background: #33415555;
+  color: var(--muted);
+}
+.badge.done {
+  background: #16653455;
+  color: var(--ok);
+}
+.resume {
+  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px dashed var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Game HUD */
+.hud {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: 1fr;
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  position: sticky;
+  top: 0.5rem;
+  z-index: 10;
+  box-shadow: 0 8px 24px #0008;
+}
+@media (min-width: 640px) {
+  .hud {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.hud-item label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.hud-item .val {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+.hud-item.next .val {
+  color: var(--accent);
+}
+
+.level-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.chip {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.85rem;
+}
+.chip.ban {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.chip.warn {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+
+.panel {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.reply {
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.02rem;
+  min-height: 3.2rem;
+  color: #e2e8f0;
+}
+
+.prompt-box {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  background: #0a0f18;
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  font: inherit;
+  font-size: 1.1rem;
+}
+.prompt-box:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+button.btn {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+  color: white;
+  background: var(--btn);
+  min-height: 48px;
+}
+button.btn:hover {
+  background: var(--btn-hover);
+}
+button.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+button.btn.secondary {
+  background: #334155;
+}
+button.btn.secondary:hover {
+  background: #475569;
+}
+button.btn.ghost {
+  background: transparent;
+  border: 2px solid var(--border);
+  color: var(--muted);
+}
+button.btn.ok {
+  background: #15803d;
+}
+button.btn.danger {
+  background: #9f1239;
+}
+
+.toast {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.toast.win {
+  background: #14532d66;
+  border: 1px solid var(--ok);
+  color: var(--ok);
+}
+.toast.fail {
+  background: #7f1d1d55;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+.toast.info {
+  background: #1e3a5f66;
+  border: 1px solid #60a5fa;
+  color: #93c5fd;
+}
+.toast.tip {
+  background: #42200666;
+  border: 1px solid var(--warn);
+  color: var(--warn);
+}
+
+.log {
+  max-height: 220px;
+  overflow: auto;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.log .entry {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0;
+}
+.log .entry:first-child {
+  border-top: none;
+}
+
+.win-modal,
+.fail-modal {
+  margin-top: 0.75rem;
+}
+
+/* Token Heist */
+.tok-board {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+  padding: 0.75rem;
+  background: #0a0f18;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  min-height: 4rem;
+}
+
+button.tok {
+  appearance: none;
+  font: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 2px solid var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+  cursor: pointer;
+  min-height: 44px;
+  min-width: 44px;
+}
+button.tok:hover {
+  filter: brightness(1.15);
+}
+button.tok.tok-ban {
+  border-color: var(--danger);
+  background: #7f1d1d55;
+  color: var(--danger);
+}
+button.tok.tok-sel {
+  box-shadow: 0 0 0 3px #5eead466;
+}
+button.tok.tok-multi {
+  border-style: dashed;
+}
+
+button.tok-merge {
+  appearance: none;
+  font: inherit;
+  font-weight: 800;
+  font-size: 1rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  background: var(--panel-2);
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+button.tok-merge:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.chip.ok-chip {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+#heist-time.urgent {
+  color: var(--danger);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.55; }
+}
+
+.heist-msg {
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
