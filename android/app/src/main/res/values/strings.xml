@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Hunter Association</string>
+    <string name="title_activity_main">Hunter Association</string>
+    <string name="package_name">io.github.st0nkingst1ngray.prompttrapdoor</string>
+    <string name="custom_url_scheme">io.github.st0nkingst1ngray.prompttrapdoor</string>
+</resources>

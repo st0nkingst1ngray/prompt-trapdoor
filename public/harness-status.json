@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-05T09:04:24.294Z",
+  "jobs": [
+    {
+      "id": "hj-rankc-1",
+      "prompt": "Rank C doors from the plan (Stop the Runaway, Schema Croupier, Logit Ward) + harness scaffold",
+      "kind": "gate",
+      "context": null,
+      "state": "apk_ready",
+      "createdAt": "2026-10-05T09:03:09.634Z",
+      "updatedAt": "2026-10-05T09:04:24.294Z",
+      "history": [
+        {
+          "state": "inventing",
+          "at": "2026-10-05T09:03:09.634Z",
+          "note": "Picked up by Grok Bot"
+        },
+        {
+          "state": "building",
+          "at": "2026-10-05T09:03:09.754Z",
+          "note": "Grok Bot building Rank C on the box"
+        },
+        {
+          "state": "web_ready",
+          "at": "2026-10-05T09:03:12.570Z",
+          "note": "Refresh web to play Rank C"
+        },
+        {
+          "state": "apk_building",
+          "at": "2026-10-05T09:04:05.963Z",
+          "note": "Gradle assembleDebug running — keep playing on web"
+        },
+        {
+          "state": "apk_ready",
+          "at": "2026-10-05T09:04:24.294Z",
+          "note": "android/app/build/outputs/apk/debug/app-debug.apk"
+        }
+      ],
+      "note": "android/app/build/outputs/apk/debug/app-debug.apk",
+      "result": "app-debug.apk"
+    }
+  ]
+}
