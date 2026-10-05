@@ -13,10 +13,12 @@ import {
   writeHeistSave,
   type HeistSaveData,
 } from './tokenHeistStorage'
+import { awardGate, XP_PER_GATE } from './hunter'
 
 export type HeistCallbacks = {
   onHub: () => void
   escapeHtml: (s: string) => string
+  onFirstClear?: () => void
 }
 
 type RunState = 'playing' | 'won' | 'lost'
@@ -47,6 +49,10 @@ function persist(msg?: string) {
 
 export function heistClearedCount(): number {
   return cleared.length
+}
+
+export function heistClearedIds(): number[] {
+  return [...cleared]
 }
 
 export function heistLevelCount(): number {
@@ -294,8 +300,12 @@ function submitHeist() {
   if (run !== 'playing') return
   if (isWinning(tiles, L())) {
     run = 'won'
-    if (!cleared.includes(L().id)) cleared.push(L().id)
-    lastToast = `<div class="toast win">🎉 Heist success! ${callbacks!.escapeHtml(L().concept)}</div>`
+    const firstClear = !cleared.includes(L().id)
+    if (firstClear) cleared.push(L().id)
+    const gained = firstClear ? awardGate('heist', L().id) : 0
+    if (gained) callbacks?.onFirstClear?.()
+    const xpNote = gained ? ` +${XP_PER_GATE} Hunter XP.` : ''
+    lastToast = `<div class="toast win">🎉 Heist success! ${callbacks!.escapeHtml(L().concept)}${xpNote}</div>`
     stopTimer()
     persist(`Cleared heist ${L().id}`)
   } else {

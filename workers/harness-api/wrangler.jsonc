@@ -1,0 +1,26 @@
+{
+  // Hunter Association — PRIVATE harness API (Stefan only). See README.md.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "hunter-harness-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-05",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "kv_namespaces": [
+    {
+      "binding": "HARNESS_KV",
+      // Replace with the id printed by: npx wrangler kv namespace create HARNESS_KV
+      "id": "d553b49e845f47a8b4b1682278c9bfb7"
+    }
+  ],
+  "vars": {
+    // Browser origins allowed by CORS (comma list). Requests without an Origin header (curl / Grok Bot CLI)
+    // are not affected. Capacitor 7 Android WebView = https://localhost, iOS = capacitor://localhost,
+    // web dev = http://localhost:5173. Add https://st0nkingst1ngray.github.io only if you play the Pages build.
+    "ALLOWED_ORIGINS": "capacitor://localhost,https://localhost,http://localhost:5173"
+  }
+  // Secrets (never in this file):
+  //   npx wrangler secret put HARNESS_TOKEN          (required, 24+ chars)
+  //   npx wrangler secret put NOTIFY_WEBHOOK_URL     (optional, https only)
+  //   npx wrangler secret put NOTIFY_WEBHOOK_BEARER  (optional)
+}
