@@ -1017,11 +1017,17 @@ label.slider input[type='range'] {
 }
 .bash-editor,
 #bash-editor,
+#koan-editor,
+#expy-editor,
+#pyi-editor,
 #bash-player {
   width: 100%;
   margin-top: 0.35rem;
 }
-#bash-editor {
+#bash-editor,
+#koan-editor,
+#expy-editor,
+#pyi-editor {
   min-height: 14rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 16px;

@@ -10,3 +10,31 @@ bash handbook). The upstream Python Rich terminal engine (engine/*.py, play.sh)
 is not included. Play, hints, and grading are implemented in this repository.
 Learner scripts run in the browser with just-bash (Apache-2.0) and are not
 sent to a server.
+
+Python Koans
+Copyright 2021 Greg Malcolm and The Status Is Not Quo
+https://github.com/gregmalcolm/python_koans
+Licensed under the MIT License. See third_party/python-koans/LICENSE.
+
+The vendored material is the koan curriculum (278 missions). The upstream
+sensei, mountain, and colorama runner are not included. Play and grading
+are implemented in this repository. Learner code runs in the browser with
+Pyodide and is not sent to a server.
+
+Exercism Python
+Copyright (c) 2021 Exercism
+https://github.com/exercism/python
+Licensed under the MIT License. See third_party/exercism-python/LICENSE.
+
+The vendored material is the non-deprecated concept and practice track
+(149 exercises), including instructions, starters, tests, and exemplars
+used as reference answers. Deprecated exercises, articles, and approaches
+are not included.
+
+pyi-thon
+Copyright (c) 2026 Edward Yi
+https://github.com/aiedwardyi/pyi-thon
+Licensed under the MIT License. See third_party/pyithon/LICENSE.
+
+The vendored material is the English 30-level curriculum. The upstream
+React app and Korean overlay are not included.

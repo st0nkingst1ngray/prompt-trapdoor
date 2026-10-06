@@ -1,0 +1,2 @@
+export const PYTHON_KOANS_LEVELS = 278
+export const PYTHON_KOANS_MODULES = 37

@@ -1,4 +1,7 @@
 import { mountBashMissions, unmountBashMissions } from './bashmissions/ui'
+import { mountExercismPython, unmountExercismPython } from './exercism-python/ui'
+import { mountPyithon, unmountPyithon } from './pyithon/ui'
+import { mountPythonKoans, unmountPythonKoans } from './python-koans/ui'
 import { ACTIVE_BOOK } from './books/osmani2026/index'
 import { gradeActivity, gradeBoss, type AkcpAnswer } from './grade'
 import {
@@ -32,6 +35,9 @@ type View =
   | { kind: 'map' }
   | { kind: 'books' }
   | { kind: 'bash' }
+  | { kind: 'koans' }
+  | { kind: 'exercism' }
+  | { kind: 'pyithon' }
   | { kind: 'wizard'; sectionId: string; pageIndex: number }
   | { kind: 'quests'; sectionId: string }
   | { kind: 'quest'; sectionId: string; questId: string }
@@ -55,8 +61,15 @@ export function mountAkcp(host: HTMLElement, callbacks: AkcpCallbacks): void {
   paint()
 }
 
-export function unmountAkcp(): void {
+function unmountSideBooks(): void {
   unmountBashMissions()
+  unmountPythonKoans()
+  unmountExercismPython()
+  unmountPyithon()
+}
+
+export function unmountAkcp(): void {
+  unmountSideBooks()
   view = { kind: 'map' }
   beatIndex = 0
   feedback = null
@@ -137,7 +150,7 @@ function bindHub(): void {
 function paint(): void {
   if (!root || !cb) return
   const save = loadAkcp()
-  if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books') {
+  if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books' && view.kind !== 'koans' && view.kind !== 'exercism' && view.kind !== 'pyithon') {
     paintPenalty(save.penaltyPendingId)
     return
   }
@@ -147,6 +160,18 @@ function paint(): void {
   }
   if (view.kind === 'bash') {
     paintBash()
+    return
+  }
+  if (view.kind === 'koans') {
+    paintKoans()
+    return
+  }
+  if (view.kind === 'exercism') {
+    paintExercism()
+    return
+  }
+  if (view.kind === 'pyithon') {
+    paintPyithon()
     return
   }
   if (view.kind === 'map') paintMap(save)
@@ -175,7 +200,7 @@ function paintMap(save: AkcpSave): void {
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Advanced Knowledge Collecting Protocol</h1>
-      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road. Books switches to BashMissions.</p>
+      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road. Books opens BashMissions and the Python campaigns.</p>
     </header>
     <div class="actions"><button class="btn secondary" id="btn-akcp-books" type="button">Books</button></div>
     <div id="akcp-stats" class="rank-card">${esc(stats)}</div>
@@ -203,7 +228,7 @@ function paintBooks(): void {
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Choose a book</h1>
-      <p class="muted">Osmani stays on the protocol map. BashMissions is the 500-level scripting campaign.</p>
+      <p class="muted">Osmani stays on the protocol map. BashMissions and the three Python books are graded campaigns.</p>
     </header>
     <div class="hub-grid">
       <button class="tile" id="akcp-book-osmani" type="button">
@@ -218,6 +243,24 @@ function paintBooks(): void {
         <div class="sub">26 modules, 500 levels. Write a script, run the tests, take the next hint.</div>
         <span class="badge">Play</span>
       </button>
+      <button class="tile" id="akcp-book-koans" type="button">
+        <div class="emoji">🐍</div>
+        <div class="title">Python Koans</div>
+        <div class="sub">278 missions. Fill the blank or fix the code until that one test passes.</div>
+        <span class="badge">Play</span>
+      </button>
+      <button class="tile" id="akcp-book-exercism" type="button">
+        <div class="emoji">🧩</div>
+        <div class="title">Exercism Python</div>
+        <div class="sub">149 exercises. Concept track, then practice. The included tests grade you.</div>
+        <span class="badge">Play</span>
+      </button>
+      <button class="tile" id="akcp-book-pyithon" type="button">
+        <div class="emoji">📘</div>
+        <div class="title">pyi-thon</div>
+        <div class="sub">30 levels, three phases. Print the expected output and use the concept.</div>
+        <span class="badge">Play</span>
+      </button>
     </div>
   `)
   bindHub()
@@ -229,22 +272,57 @@ function paintBooks(): void {
     view = { kind: 'bash' }
     paint()
   })
+  document.getElementById('akcp-book-koans')?.addEventListener('click', () => {
+    view = { kind: 'koans' }
+    paint()
+  })
+  document.getElementById('akcp-book-exercism')?.addEventListener('click', () => {
+    view = { kind: 'exercism' }
+    paint()
+  })
+  document.getElementById('akcp-book-pyithon')?.addEventListener('click', () => {
+    view = { kind: 'pyithon' }
+    paint()
+  })
+}
+
+function sideCallbacks(unmount: () => void) {
+  return {
+    escapeHtml: esc,
+    onHub: () => {
+      unmount()
+      cb?.onHub()
+    },
+    onBooks: () => {
+      unmount()
+      view = { kind: 'books' }
+      paint()
+    },
+  }
 }
 
 function paintBash(): void {
   if (!root || !cb) return
-  mountBashMissions(root, {
-    escapeHtml: esc,
-    onHub: () => {
-      unmountBashMissions()
-      cb?.onHub()
-    },
-    onBooks: () => {
-      unmountBashMissions()
-      view = { kind: 'books' }
-      paint()
-    },
-  })
+  unmountSideBooks()
+  mountBashMissions(root, sideCallbacks(unmountBashMissions))
+}
+
+function paintKoans(): void {
+  if (!root || !cb) return
+  unmountSideBooks()
+  mountPythonKoans(root, sideCallbacks(unmountPythonKoans))
+}
+
+function paintExercism(): void {
+  if (!root || !cb) return
+  unmountSideBooks()
+  mountExercismPython(root, sideCallbacks(unmountExercismPython))
+}
+
+function paintPyithon(): void {
+  if (!root || !cb) return
+  unmountSideBooks()
+  mountPyithon(root, sideCallbacks(unmountPyithon))
 }
 
 function paintWizard(sectionId: string, pageIndex: number): void {
