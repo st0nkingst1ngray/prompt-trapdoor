@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  HUD_SCROLL_THRESHOLD,
+  HUD_COLLAPSE_AT,
   bindBashHudScroll,
   initialHudScroll,
   reduceHudScroll,
@@ -12,36 +12,32 @@ function scroll(state: HudScrollState, y: number): HudScrollState {
 }
 
 describe('bashmissions goal banner scroll', () => {
-  it('stays open at the top and collapses after scrolling down into the mission', () => {
+  it('stays open at the top and collapses once the mission scrolls under the card', () => {
     let state = initialHudScroll(0)
     expect(state.collapsed).toBe(false)
-    state = scroll(state, 4)
-    state = scroll(state, 8)
+    state = scroll(state, 12)
     expect(state.collapsed).toBe(false)
-    state = scroll(state, 8 + HUD_SCROLL_THRESHOLD)
+    state = scroll(state, HUD_COLLAPSE_AT)
     expect(state.collapsed).toBe(true)
   })
 
-  it('opens again when scrolling back up and stays open at the header', () => {
-    let state = initialHudScroll(200)
+  it('stays closed through the briefing and editor, then opens at the header', () => {
+    let state = initialHudScroll(0)
+    state = scroll(state, 180)
     expect(state.collapsed).toBe(true)
-    state = scroll(state, 196)
+    state = scroll(state, 90)
     expect(state.collapsed).toBe(true)
-    state = scroll(state, 200 - HUD_SCROLL_THRESHOLD)
-    expect(state.collapsed).toBe(false)
-    state = scroll(state, 400)
+    state = scroll(state, 40)
     expect(state.collapsed).toBe(true)
     state = scroll(state, 0)
     expect(state.collapsed).toBe(false)
   })
 
-  it('keeps collapsing while the player keeps scrolling down in small steps', () => {
-    let state = initialHudScroll(80)
+  it('does not pop the card back open on a short scroll up inside the mission', () => {
+    let state = initialHudScroll(320)
     expect(state.collapsed).toBe(true)
-    for (let y = 84; y <= 120; y += 4) state = scroll(state, y)
+    state = scroll(state, 260)
     expect(state.collapsed).toBe(true)
-    state = scroll(state, state.lastY - HUD_SCROLL_THRESHOLD * 2)
-    expect(state.collapsed).toBe(false)
   })
 
   it('collapses the banner element on scroll down and ignores scroll after unbind', () => {

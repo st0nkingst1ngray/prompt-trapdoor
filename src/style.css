@@ -28,6 +28,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
+  color-scheme: dark;
 }
 
 body {
@@ -1034,6 +1035,7 @@ label.slider input[type='range'] {
 .bash-hud-slot.is-collapsed {
   max-height: 0;
   margin-bottom: 0;
+  padding-top: 0;
   pointer-events: none;
 }
 .bash-hud-clip {
@@ -1070,7 +1072,9 @@ label.slider input[type='range'] {
   min-height: min(14rem, 42dvh);
   max-width: 100%;
   resize: vertical;
-  color: var(--text);
+  color: #f2f5fa;
+  color-scheme: dark;
+  caret-color: #f2f5fa;
   background: #0a0f18;
   border: 2px solid var(--border);
   border-radius: 12px;
@@ -1081,6 +1085,8 @@ label.slider input[type='range'] {
   tab-size: 2;
   scroll-margin-top: 0.75rem;
   scroll-margin-bottom: calc(4.5rem + var(--keyboard-inset, 0px));
+  -webkit-appearance: none;
+  appearance: none;
 }
 #bash-editor:focus {
   outline: none;

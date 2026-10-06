@@ -1,33 +1,34 @@
-/** Pixels of accumulated scroll before the goal banner toggles. */
-export const HUD_SCROLL_THRESHOLD = 12
+/**
+ * Once the mission has moved under the card, hide it.
+ * Stefan's phone shot is this state: chips tucked under a full-height card
+ * while the briefing and editor are already on screen.
+ */
+export const HUD_COLLAPSE_AT = 24
 
-/** Near the top of the page the banner stays open. */
-export const HUD_SCROLL_TOP = 16
+/** The card opens again only when the page is back at the header. */
+export const HUD_SCROLL_TOP = 8
 
 export interface HudScrollState {
   collapsed: boolean
   lastY: number
-  /** Scroll since the last toggle. Small moves add up. */
   acc: number
 }
 
 export function initialHudScroll(y: number): HudScrollState {
   const next = Math.max(0, y)
-  return { collapsed: next > HUD_SCROLL_TOP, lastY: next, acc: 0 }
+  return { collapsed: next >= HUD_COLLAPSE_AT, lastY: next, acc: 0 }
 }
 
 /**
- * Scroll down collapses the banner. Scroll up opens it.
- * At the top of the page it is always open.
+ * The card swipes closed after the player scrolls into the mission.
+ * It stays closed while they move around the briefing, checks, and editor.
+ * It opens when they scroll back to the top of the level.
  */
 export function reduceHudScroll(state: HudScrollState, y: number): HudScrollState {
   const next = Math.max(0, y)
-  const delta = next - state.lastY
   if (next <= HUD_SCROLL_TOP) return { collapsed: false, lastY: next, acc: 0 }
-  const acc = state.acc + delta
-  if (acc >= HUD_SCROLL_THRESHOLD) return { collapsed: true, lastY: next, acc: 0 }
-  if (acc <= -HUD_SCROLL_THRESHOLD) return { collapsed: false, lastY: next, acc: 0 }
-  return { collapsed: state.collapsed, lastY: next, acc }
+  if (next >= HUD_COLLAPSE_AT) return { collapsed: true, lastY: next, acc: 0 }
+  return { collapsed: state.collapsed, lastY: next, acc: 0 }
 }
 
 const HUD_MOTION_MS = 400
