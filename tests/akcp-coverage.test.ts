@@ -130,4 +130,17 @@ describe('akcp coverage', () => {
     expect(coverageGaps(OSMANI_BOOK)).toEqual([])
     expect(triviaHits(OSMANI_BOOK)).toEqual([])
   })
+
+  it('flags specs.p4 when every covers list drops it', () => {
+    const copy = structuredClone(OSMANI_BOOK)
+    for (const section of copy.chapters.flatMap((chapter) => chapter.sections)) {
+      for (const step of section.steps) step.covers = step.covers.filter((id) => id !== 'specs.p4')
+      if (section.boss) {
+        section.boss.covers = section.boss.covers.filter((id) => id !== 'specs.p4')
+        for (const beat of section.boss.beats) beat.covers = beat.covers.filter((id) => id !== 'specs.p4')
+      }
+    }
+    const gaps = coverageGaps(copy)
+    expect(gaps.some((gap) => gap.code === 'paragraph-not-in-quest' && gap.detail === 'specs.p4')).toBe(true)
+  })
 })

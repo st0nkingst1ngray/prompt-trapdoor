@@ -80,5 +80,25 @@ describe('akcp save', () => {
     expect(gradeBoss(boss, 0, { kind: 'order', submitted: ['ask', 'spec', 'plan', 'code'] }).win).toBe(true)
     expect(gradeBoss(boss, 2, { kind: 'checklist', picked: ['spec'] }).win).toBe(false)
     expect(gradeBoss(boss, 2, { kind: 'checklist', picked: ['plan', 'spec'] }).win).toBe(true)
+    expect(gradeBoss(boss, 1, { kind: 'transcript', marks: { rush: 'keep', hold: 'keep' } }).win).toBe(false)
+    expect(gradeBoss(boss, 1, { kind: 'transcript', marks: { rush: 'stop', hold: 'keep' } }).win).toBe(true)
+  })
+
+  it('keeps Planning at 4 when the specs boss is awarded again', () => {
+    let save = emptyAkcpSave()
+    for (const id of ['specs-order', 'specs-transcript', 'specs-checklist']) {
+      save = awardActivity(save, id, 'planning', 'quest').save
+    }
+    const first = awardActivity(save, 'specs-boss', 'planning', 'boss')
+    expect(first.pointsGained).toBe(1)
+    expect(first.save.stats.planning).toBe(4)
+    const again = awardActivity(first.save, 'specs-boss', 'planning', 'boss')
+    expect(again.pointsGained).toBe(0)
+    expect(again.save.stats.planning).toBe(4)
+    expect(again.save.stats.context).toBe(0)
+    expect(again.save.stats.verification).toBe(0)
+    expect(again.save.stats.versionControl).toBe(0)
+    expect(again.save.stats.testing).toBe(0)
+    expect(again.save.stats.adaptation).toBe(0)
   })
 })

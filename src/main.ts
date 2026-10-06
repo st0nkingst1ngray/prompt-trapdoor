@@ -753,6 +753,8 @@ startHarnessPolling(`${import.meta.env.BASE_URL}harness-status.json`, () => {
   resetHarnessUi()
   unmountHeist()
   unmountAkcp()
+  // unmountHeist writes a pause line; clear it so the console reset stays empty.
+  heistDebugReset()
   levelIndex = 0
   attempt = 1
   cleared = []

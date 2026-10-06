@@ -14,12 +14,20 @@ beforeEach(() => {
 describe('akcp wizard', () => {
   it('reads intro pages in order and then unlocks specs', () => {
     mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
+    expect(document.querySelector<HTMLButtonElement>('#akcp-section-specs')!.disabled).toBe(true)
+    expect(document.getElementById('btn-akcp-enter-dungeon')).toBeNull()
     document.querySelector<HTMLButtonElement>('#akcp-section-intro')!.click()
     expect(document.querySelector('#akcp-page')?.getAttribute('data-page-id')).toBe('intro.page.1')
+    expect(document.querySelector('#akcp-page')?.textContent).toContain('AI coding assistants became game-changers')
+    expect(document.getElementById('btn-akcp-enter-dungeon')).toBeNull()
     document.getElementById('btn-akcp-next')!.click()
+    expect(document.querySelector('#akcp-page')?.textContent).toContain('At Anthropic, for example')
     document.getElementById('btn-akcp-next')!.click()
+    expect(document.querySelector('#akcp-page')?.textContent).toContain("In this article, I'll share")
     document.getElementById('btn-akcp-next')!.click()
     expect(document.querySelector('#akcp-page')?.getAttribute('data-page-id')).toBe('intro.page.4')
+    expect(document.querySelector('#akcp-page')?.textContent).toContain("If you're interested in more")
+    expect(document.getElementById('btn-akcp-enter-dungeon')).toBeNull()
     document.getElementById('btn-akcp-done')!.click()
     expect(loadAkcp().pagesRead).toEqual([
       'intro.page.1', 'intro.page.2', 'intro.page.3', 'intro.page.4',
@@ -138,19 +146,45 @@ describe('akcp on the association hub', () => {
     submit()
 
     expect(loadAkcp().stats.planning).toBe(4)
+    app.querySelector<HTMLButtonElement>('#akcp-section-specs')!.click()
+    while (app.querySelector('#btn-akcp-next')) app.querySelector<HTMLButtonElement>('#btn-akcp-next')!.click()
+    app.querySelector<HTMLButtonElement>('#btn-akcp-enter-dungeon')!.click()
+    app.querySelector<HTMLButtonElement>('[data-boss-id="specs-boss"]')!.click()
+    submit()
+    for (const [id, mark] of [['rush', 'stop'], ['hold', 'keep']] as const) {
+      app.querySelector<HTMLInputElement>(`input[name="mark-${id}"][value="${mark}"]`)!.click()
+    }
+    submit()
+    for (const id of ['spec', 'plan']) {
+      app.querySelector<HTMLInputElement>(`input[type="checkbox"][value="${id}"]`)!.click()
+    }
+    submit()
+    expect(loadAkcp().stats.planning).toBe(4)
+    expect(app.querySelector('#akcp-hub-badge')).toBeNull()
     app.querySelector<HTMLButtonElement>('#btn-akcp-hub')!.click()
+    expect(app.querySelector('#akcp-hub-badge')?.textContent).toBe('Specs clear')
     expect(app.querySelector('.rank-card')?.textContent).toContain('100 XP')
     expect(app.querySelector<HTMLButtonElement>('[data-gate="runaway"]')!.disabled).toBe(false)
-    expect(JSON.parse(localStorage.getItem('hunter-association-save-v1')!).xp).toBe(100)
+    const hunter = JSON.parse(localStorage.getItem('hunter-association-save-v1')!) as { xp: number; classId: string }
+    expect(hunter.xp).toBe(100)
+    expect(hunter.classId).toBe('shadow')
     vi.unstubAllGlobals()
   })
 
   it('resets the protocol save with the rest of the browser save', async () => {
+    localStorage.setItem('hunter-association-save-v1', JSON.stringify({ xp: 0, awarded: [], classId: null }))
+    localStorage.setItem('hunter-dgates-save-v1', JSON.stringify({}))
+    localStorage.setItem('prompt-trapdoor-save-v1', JSON.stringify({ levelIndex: 0, attempt: 1, cleared: [] }))
+    localStorage.setItem('token-heist-save-v1', JSON.stringify({ cleared: [] }))
     const app = await boot()
     app.querySelector<HTMLButtonElement>('#tile-akcp')!.click()
     expect(localStorage.getItem('akcp-save-v1')).not.toBeNull()
     ;(window as unknown as { __ptReset: () => void }).__ptReset()
     expect(localStorage.getItem('akcp-save-v1')).toBeNull()
+    expect(localStorage.getItem('hunter-association-save-v1')).toBeNull()
+    expect(localStorage.getItem('hunter-dgates-save-v1')).toBeNull()
+    expect(localStorage.getItem('prompt-trapdoor-save-v1')).toBeNull()
+    expect(localStorage.getItem('token-heist-save-v1')).toBeNull()
     expect(app.querySelector('#hub')).not.toBeNull()
     vi.unstubAllGlobals()
   })
