@@ -12,6 +12,7 @@ import {
   restoreHeist,
   unmountHeist,
 } from './tokenHeist'
+import { clearBashMissionsSave } from './akcp/bashmissions/save'
 import { clearAkcpSave, loadAkcp } from './akcp/save'
 import { mountAkcp, unmountAkcp } from './akcp/ui'
 import {
@@ -260,7 +261,7 @@ function renderHub(): string {
       <button class="tile" id="tile-akcp" type="button">
         <div class="emoji">📗</div>
         <div class="title">AKCP</div>
-        <div class="sub">Open world · Advanced Knowledge Collecting Protocol. Optional. Your rank stays on the E–S road.</div>
+        <div class="sub">Open world · Osmani workflow or BashMissions (500 bash levels). Optional. Your rank stays on the E–S road.</div>
         <span class="badge" id="akcp-hub-badge">${loadAkcp().clearedBossIds.includes('specs-boss') ? 'Specs clear' : 'Enter'}</span>
       </button>
     </div>
@@ -749,6 +750,7 @@ startHarnessPolling(`${import.meta.env.BASE_URL}harness-status.json`, () => {
   clearHunter()
   clearGateSave()
   clearAkcpSave()
+  clearBashMissionsSave()
   resetGateUi()
   resetHarnessUi()
   unmountHeist()

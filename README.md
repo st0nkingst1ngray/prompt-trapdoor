@@ -88,7 +88,7 @@ Sneak a message past a **token filter** by splitting & merging tiles (BPE-ish). 
 
 ### AKCP (open world)
 
-Hub tile **AKCP**. Optional protocol module (Advanced Knowledge Collecting Protocol). Reading Wizard plus technical workflow quests. Does not change E–S rank. Save key `akcp-save-v1`. Plan: [docs/AKCP-OPEN-WORLD-MODULE-PLAN.md](docs/AKCP-OPEN-WORLD-MODULE-PLAN.md).
+Hub tile **AKCP**. Optional protocol module (Advanced Knowledge Collecting Protocol). Reading Wizard plus technical workflow quests for the Osmani book. **Books** also opens BashMissions (500 bash levels). Does not change E–S rank. Save keys `akcp-save-v1` and `bash-missions-save-v1`. Plan: [docs/AKCP-OPEN-WORLD-MODULE-PLAN.md](docs/AKCP-OPEN-WORLD-MODULE-PLAN.md). BashMissions: [docs/BASHMISSIONS.md](docs/BASHMISSIONS.md).
 
 | # | Title | Message | Budget | Time | Lesson |
 |---|--------|---------|--------|------|--------|

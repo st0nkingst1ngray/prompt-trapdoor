@@ -1010,3 +1010,69 @@ label.slider input[type='range'] {
 .akcp-sim {
   margin-top: 1.25rem;
 }
+
+.bash-credit {
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+}
+.bash-editor,
+#bash-editor,
+#bash-player {
+  width: 100%;
+  margin-top: 0.35rem;
+}
+#bash-editor {
+  min-height: 14rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 16px;
+  line-height: 1.45;
+  tab-size: 2;
+}
+.bash-name {
+  display: block;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.bash-code {
+  overflow: auto;
+  padding: 0.75rem 0.9rem;
+  border-radius: 12px;
+  background: #0a0e16;
+  border: 2px solid var(--border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+  white-space: pre-wrap;
+}
+.bash-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.5rem 0 0.75rem;
+}
+.bash-chip {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.bash-details {
+  margin: 0.75rem 0;
+}
+.bash-case.ok strong {
+  color: var(--ok);
+}
+.bash-case.bad strong {
+  color: var(--danger);
+}
+#bash-hint-panel,
+#bash-debrief,
+#bash-results {
+  margin-top: 0.9rem;
+}
+#bash-brief p,
+#bash-guide p,
+#bash-debrief p {
+  font-size: 1.05rem;
+}
