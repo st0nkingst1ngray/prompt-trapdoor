@@ -1,4 +1,6 @@
-import type { AkcpBook } from '../../types'
+import type { AkcpBook, AkcpSection } from '../../types'
+import { INTRO_SECTION } from './intro'
+import { SPECS_SECTION } from './specs'
 import { indexedSection } from './stubs'
 
 export const LOCKED_SECTION_IDS = [
@@ -39,7 +41,11 @@ export const OSMANI_BOOK: AkcpBook = {
     {
       id: 'workflow-2026',
       title: 'My LLM coding workflow going into 2026',
-      sections: LOCKED_SECTION_IDS.map((id) => indexedSection(id, SECTION_TITLES[id], id !== 'intro')),
+      sections: LOCKED_SECTION_IDS.map((id): AkcpSection => {
+        if (id === 'intro') return INTRO_SECTION
+        if (id === 'specs') return SPECS_SECTION
+        return indexedSection(id, SECTION_TITLES[id], true)
+      }),
     },
   ],
 }

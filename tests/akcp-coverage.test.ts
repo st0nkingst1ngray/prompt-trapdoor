@@ -125,4 +125,9 @@ describe('akcp coverage', () => {
     ]))
     expect(hits.length).toBeGreaterThan(0)
   })
+
+  it('covers the live Osmani book with no trivia hits', () => {
+    expect(coverageGaps(OSMANI_BOOK)).toEqual([])
+    expect(triviaHits(OSMANI_BOOK)).toEqual([])
+  })
 })

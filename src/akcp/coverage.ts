@@ -97,7 +97,8 @@ export function coverageGaps(book: AkcpBook): CoverageGap[] {
         }
       }
       for (const activity of activities(section)) {
-        if (activity.kind !== 'order' && activity.kind !== 'transcript' && activity.kind !== 'checklist') {
+        const kind: string = activity.kind
+        if (kind !== 'order' && kind !== 'transcript' && kind !== 'checklist') {
           gaps.push({ sectionId: section.id, code: 'bad-kind', detail: activity.id })
         }
       }
