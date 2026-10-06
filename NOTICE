@@ -1,0 +1,12 @@
+Prompt Trapdoor includes the BashMissions curriculum.
+
+BashMissions
+Copyright (c) 2026 Jalil Abdollahi
+https://github.com/devopshobbies/bashmissions
+Licensed under the MIT License. See third_party/bashmissions/LICENSE.
+
+The vendored material is the curriculum (levels, lesson text, fixtures, and the
+bash handbook). The upstream Python Rich terminal engine (engine/*.py, play.sh)
+is not included. Play, hints, and grading are implemented in this repository.
+Learner scripts run in the browser with just-bash (Apache-2.0) and are not
+sent to a server.

@@ -1,3 +1,4 @@
+import { mountBashMissions, unmountBashMissions } from './bashmissions/ui'
 import { ACTIVE_BOOK } from './books/osmani2026/index'
 import { gradeActivity, gradeBoss, type AkcpAnswer } from './grade'
 import {
@@ -29,6 +30,8 @@ const SIM = 'Training sim. This model is fake and local. This is not a request t
 
 type View =
   | { kind: 'map' }
+  | { kind: 'books' }
+  | { kind: 'bash' }
   | { kind: 'wizard'; sectionId: string; pageIndex: number }
   | { kind: 'quests'; sectionId: string }
   | { kind: 'quest'; sectionId: string; questId: string }
@@ -53,6 +56,7 @@ export function mountAkcp(host: HTMLElement, callbacks: AkcpCallbacks): void {
 }
 
 export function unmountAkcp(): void {
+  unmountBashMissions()
   view = { kind: 'map' }
   beatIndex = 0
   feedback = null
@@ -133,8 +137,16 @@ function bindHub(): void {
 function paint(): void {
   if (!root || !cb) return
   const save = loadAkcp()
-  if (save.penaltyPendingId) {
+  if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books') {
     paintPenalty(save.penaltyPendingId)
+    return
+  }
+  if (view.kind === 'books') {
+    paintBooks()
+    return
+  }
+  if (view.kind === 'bash') {
+    paintBash()
     return
   }
   if (view.kind === 'map') paintMap(save)
@@ -163,13 +175,18 @@ function paintMap(save: AkcpSave): void {
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Advanced Knowledge Collecting Protocol</h1>
-      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road.</p>
+      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road. Books switches to BashMissions.</p>
     </header>
+    <div class="actions"><button class="btn secondary" id="btn-akcp-books" type="button">Books</button></div>
     <div id="akcp-stats" class="rank-card">${esc(stats)}</div>
     <h2 class="section-title">Protocol map</h2>
     <div class="hub-grid">${tiles}</div>
   `)
   bindHub()
+  document.getElementById('btn-akcp-books')?.addEventListener('click', () => {
+    view = { kind: 'books' }
+    paint()
+  })
   for (const section of sections()) {
     document.getElementById(`akcp-section-${section.id}`)?.addEventListener('click', () => {
       if (!sectionOpen(section, loadAkcp())) return
@@ -179,6 +196,55 @@ function paintMap(save: AkcpSave): void {
       paint()
     })
   }
+}
+
+function paintBooks(): void {
+  root!.innerHTML = shell(`
+    <header class="hub-header">
+      <p class="eyebrow">Open world · optional</p>
+      <h1>Choose a book</h1>
+      <p class="muted">Osmani stays on the protocol map. BashMissions is the 500-level scripting campaign.</p>
+    </header>
+    <div class="hub-grid">
+      <button class="tile" id="akcp-book-osmani" type="button">
+        <div class="emoji">📗</div>
+        <div class="title">Osmani workflow</div>
+        <div class="sub">My LLM coding workflow going into 2026. Reading wizard and technical quests.</div>
+        <span class="badge">Open</span>
+      </button>
+      <button class="tile" id="akcp-book-bash" type="button">
+        <div class="emoji">⌨️</div>
+        <div class="title">BashMissions</div>
+        <div class="sub">26 modules, 500 levels. Write a script, run the tests, take the next hint.</div>
+        <span class="badge">Play</span>
+      </button>
+    </div>
+  `)
+  bindHub()
+  document.getElementById('akcp-book-osmani')?.addEventListener('click', () => {
+    view = { kind: 'map' }
+    paint()
+  })
+  document.getElementById('akcp-book-bash')?.addEventListener('click', () => {
+    view = { kind: 'bash' }
+    paint()
+  })
+}
+
+function paintBash(): void {
+  if (!root || !cb) return
+  mountBashMissions(root, {
+    escapeHtml: esc,
+    onHub: () => {
+      unmountBashMissions()
+      cb?.onHub()
+    },
+    onBooks: () => {
+      unmountBashMissions()
+      view = { kind: 'books' }
+      paint()
+    },
+  })
 }
 
 function paintWizard(sectionId: string, pageIndex: number): void {
