@@ -15,6 +15,9 @@ fi
 export ANDROID_HOME="${ANDROID_HOME:-/opt/android-sdk}"
 export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
 export PATH="${JAVA_HOME}/bin:${ANDROID_HOME}/platform-tools:${PATH}"
+if [[ ! -f android/local.properties ]]; then
+  printf 'sdk.dir=%s\n' "$ANDROID_HOME" > android/local.properties
+fi
 npm run cap:sync
 cd android
 ./gradlew assembleDebug --no-daemon

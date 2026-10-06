@@ -1,6 +1,8 @@
 # Android debug APK
 
-Hunter Association (Prompt Trapdoor + Token Heist) wrapped with Capacitor. The WebView loads the Vite `dist/` build. GitHub Pages still uses base `/prompt-trapdoor/` via `npm run build`. The mobile build sets `CAPACITOR=1` so Vite emits relative `./` asset URLs.
+Hunter Association wrapped with Capacitor: Prompt Trapdoor, Token Heist, AKCP, and BashMissions. The WebView loads the Vite `dist/` build, including `bashmissions/curriculum.json`, so grading stays in the WebView with just-bash. Progress stays in `bash-missions-save-v1` (WebView local storage). GitHub Pages still uses base `/prompt-trapdoor/` via `npm run build`. The mobile build sets `CAPACITOR=1` so Vite emits relative `./` asset URLs.
+
+On a phone browser, the BashMissions goal banner (Goal / Constraints / Attempt / Next action) stays open at the top of a level. Scrolling down into the briefing, checks, or editor collapses it upward. Scrolling back up opens it again. The activity uses `adjustResize` so the script field stays above the keyboard.
 
 - Package: `io.github.st0nkingst1ngray.prompttrapdoor`
 - App name: Hunter Association
@@ -26,8 +28,9 @@ No emulator was installed. Instrumented UI tests were not run. Unit tests plus A
 
 ## Rebuild the debug APK
 
+From the repo root:
+
 ```bash
-cd /workspace/prompt-trapdoor
 npm install
 npm run android:apk
 ```
