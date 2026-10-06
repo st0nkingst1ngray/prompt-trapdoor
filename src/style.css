@@ -960,3 +960,53 @@ label.slider input[type='range'] {
   #harness-pill { animation: none; }
   #harness-toast { transition: none; }
 }
+
+/* AKCP reading wizard and specs dungeon */
+#akcp-page {
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+#akcp-stats {
+  margin-top: 1rem;
+}
+.akcp-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.akcp-row .actions {
+  margin-top: 0;
+  flex: none;
+}
+.akcp-line,
+.akcp-choice {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.akcp-choice {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.akcp-check {
+  margin: 0.75rem 0;
+  padding-left: 1.2rem;
+}
+#akcp-penalty {
+  border: 2px dashed var(--warn);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-top: 0.75rem;
+}
+.akcp-sim {
+  margin-top: 1.25rem;
+}

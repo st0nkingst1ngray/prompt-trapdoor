@@ -12,6 +12,8 @@ import {
   restoreHeist,
   unmountHeist,
 } from './tokenHeist'
+import { clearAkcpSave, loadAkcp } from './akcp/save'
+import { mountAkcp, unmountAkcp } from './akcp/ui'
 import {
   CLASSES,
   RANK_LADDER,
@@ -56,7 +58,7 @@ import {
 } from './harness/harnessUi'
 import type { PlayContext } from './harness/buildQueue'
 
-type Screen = 'hub' | 'game' | 'heist' | 'class' | 'dgate'
+type Screen = 'hub' | 'game' | 'heist' | 'class' | 'dgate' | 'akcp'
 
 interface AttemptLog {
   n: number
@@ -154,6 +156,15 @@ function render() {
       },
       escapeHtml,
     })
+  } else if (screen === 'akcp') {
+    mountAkcp(app, {
+      onHub: () => {
+        unmountAkcp()
+        screen = 'hub'
+        render()
+      },
+      escapeHtml,
+    })
   } else {
     app.innerHTML = renderGame()
     bindGame()
@@ -245,6 +256,12 @@ function renderHub(): string {
         <span class="badge ${heistProgress === heistTotal ? 'done' : ''}">${
           heistProgress === heistTotal ? 'Complete' : 'Play'
         }</span>
+      </button>
+      <button class="tile" id="tile-akcp" type="button">
+        <div class="emoji">📗</div>
+        <div class="title">AKCP</div>
+        <div class="sub">Open world · Advanced Knowledge Collecting Protocol. Optional. Your rank stays on the E–S road.</div>
+        <span class="badge" id="akcp-hub-badge">${loadAkcp().clearedBossIds.includes('specs-boss') ? 'Specs clear' : 'Enter'}</span>
       </button>
     </div>
     ${gatesHtml}
@@ -518,6 +535,11 @@ function bindHub() {
     screen = 'heist'
     render()
   })
+  document.getElementById('tile-akcp')?.addEventListener('click', () => {
+    resumeNote = null
+    screen = 'akcp'
+    render()
+  })
   document.getElementById('btn-continue')?.addEventListener('click', () => {
     resumeNote = null
     screen = 'game'
@@ -726,9 +748,13 @@ startHarnessPolling(`${import.meta.env.BASE_URL}harness-status.json`, () => {
   heistDebugReset()
   clearHunter()
   clearGateSave()
+  clearAkcpSave()
   resetGateUi()
   resetHarnessUi()
   unmountHeist()
+  unmountAkcp()
+  // unmountHeist writes a pause line; clear it so the console reset stays empty.
+  heistDebugReset()
   levelIndex = 0
   attempt = 1
   cleared = []

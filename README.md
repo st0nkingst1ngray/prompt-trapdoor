@@ -86,6 +86,10 @@ Sneak a message past a **token filter** by splitting & merging tiles (BPE-ish). 
 3. Submit when the path is clear (no red tiles, under budget). Soft feedback if busted; timer expiry = lose.
 4. Autosave key: `token-heist-save-v1` (separate from Trapdoor).
 
+### AKCP (open world)
+
+Hub tile **AKCP**. Optional protocol module (Advanced Knowledge Collecting Protocol). Reading Wizard plus technical workflow quests. Does not change E–S rank. Save key `akcp-save-v1`. Plan: [docs/AKCP-OPEN-WORLD-MODULE-PLAN.md](docs/AKCP-OPEN-WORLD-MODULE-PLAN.md).
+
 | # | Title | Message | Budget | Time | Lesson |
 |---|--------|---------|--------|------|--------|
 | 1 | E-Gate · Letter Drop | `CAT` | 2 | 75s | Subword pieces dodge a whole-word ban |
