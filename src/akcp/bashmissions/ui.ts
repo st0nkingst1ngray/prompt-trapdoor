@@ -15,6 +15,7 @@ import {
   writeBashMissions,
   type BashMissionsSave,
 } from './save'
+import { bindBashHudScroll, bindKeyboardInset } from './hudScroll'
 import type { BmLevel, BmModule, Curriculum } from './types'
 
 export interface BashCallbacks {
@@ -41,6 +42,7 @@ let lastAward: { levelId: number; xpGained: number; certificate: boolean } | nul
 let checking = false
 let loadError = ''
 let guideReturn: BashView = { kind: 'modules' }
+let releasePlayChrome: (() => void) | null = null
 
 export function mountBashMissions(root: HTMLElement, next: BashCallbacks): void {
   host = root
@@ -54,6 +56,8 @@ export function mountBashMissions(root: HTMLElement, next: BashCallbacks): void 
 }
 
 export function unmountBashMissions(): void {
+  releasePlayChrome?.()
+  releasePlayChrome = null
   host = null
   callbacks = null
   view = { kind: 'modules' }
@@ -88,15 +92,18 @@ function stashEditor(): void {
 function bindChrome(): void {
   document.getElementById('btn-akcp-hub')?.addEventListener('click', () => {
     stashEditor()
+    scrollPageTop()
     callbacks?.onHub()
   })
   document.getElementById('btn-akcp-books')?.addEventListener('click', () => {
     stashEditor()
+    scrollPageTop()
     callbacks?.onBooks()
   })
   document.getElementById('btn-bash-handbook')?.addEventListener('click', () => {
     if (view.kind === 'guide') return
     stashEditor()
+    scrollPageTop()
     guideReturn = view
     view = { kind: 'guide' }
     paint()
@@ -104,12 +111,25 @@ function bindChrome(): void {
 }
 
 function hud(goal: string, constraints: string, attempt: string, nextAction: string): string {
-  return `<div class="hud">
-    <div class="hud-item"><label>Goal</label><div class="val">${esc(goal)}</div></div>
-    <div class="hud-item"><label>Constraints</label><div class="val">${esc(constraints)}</div></div>
-    <div class="hud-item"><label>Attempt</label><div class="val">${esc(attempt)}</div></div>
-    <div class="hud-item next"><label>Next action</label><div class="val">${esc(nextAction)}</div></div>
+  return `<div class="bash-hud-slot" id="bash-hud-slot">
+    <div class="bash-hud-clip">
+      <div class="hud bash-hud">
+        <div class="hud-item"><label>Goal</label><div class="val">${esc(goal)}</div></div>
+        <div class="hud-item"><label>Constraints</label><div class="val">${esc(constraints)}</div></div>
+        <div class="hud-item"><label>Attempt</label><div class="val">${esc(attempt)}</div></div>
+        <div class="hud-item next"><label>Next action</label><div class="val">${esc(nextAction)}</div></div>
+      </div>
+    </div>
   </div>`
+}
+
+function releaseChrome(): void {
+  releasePlayChrome?.()
+  releasePlayChrome = null
+}
+
+function scrollPageTop(): void {
+  window.scrollTo(0, 0)
 }
 
 async function boot(): Promise<void> {
@@ -132,6 +152,7 @@ async function boot(): Promise<void> {
 
 function paint(): void {
   if (!host || !callbacks || !curriculum) return
+  releaseChrome()
   if (view.kind === 'modules') paintModules()
   else if (view.kind === 'levels') paintLevels(view.moduleId)
   else if (view.kind === 'guide') paintGuide()
@@ -175,6 +196,7 @@ function paintModules(): void {
     writeBashMissions(setPlayerName(loadBashMissions(), value))
   })
   document.getElementById('btn-bash-continue')?.addEventListener('click', () => {
+    scrollPageTop()
     openLevel(resume)
   })
   for (const mod of book.modules) {
@@ -212,6 +234,7 @@ function paintLevels(moduleId: number): void {
   `)
   bindChrome()
   document.getElementById('btn-bash-modules')?.addEventListener('click', () => {
+    scrollPageTop()
     view = { kind: 'modules' }
     paint()
   })
@@ -224,6 +247,7 @@ function openLevel(levelId: number): void {
   if (!levelUnlocked(loadBashMissions(), levelId)) return
   lastReport = lastReport?.levelId === levelId ? lastReport : null
   lastAward = lastAward?.levelId === levelId ? lastAward : null
+  scrollPageTop()
   view = { kind: 'play', levelId }
   paint()
 }
@@ -281,8 +305,8 @@ function paintPlay(levelId: number): void {
     <ul class="akcp-check" id="bash-checks">${checks}</ul>
     ${fixtures}
     <label for="bash-editor">solution.sh</label>
-    <textarea id="bash-editor" spellcheck="false" autocapitalize="off" autocomplete="off">${esc(script)}</textarea>
-    <div class="actions">
+    <textarea id="bash-editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off">${esc(script)}</textarea>
+    <div class="actions bash-runbar">
       <button class="btn" id="btn-bash-check" type="button"${checking ? ' disabled' : ''}>Check</button>
       <button class="btn secondary" id="btn-bash-hint" type="button"${stage >= 5 ? ' disabled' : ''}>${esc(hintButtonLabel(stage))}</button>
     </div>
@@ -291,10 +315,28 @@ function paintPlay(levelId: number): void {
     ${report?.passed ? passHtml(level, mod, save, award) : ''}
   `)
   bindChrome()
+  const slot = document.getElementById('bash-hud-slot')
+  const stopHud = slot ? bindBashHudScroll(slot) : () => {}
+  const stopKeyboard = bindKeyboardInset()
+  releasePlayChrome = () => {
+    stopHud()
+    stopKeyboard()
+  }
   document.getElementById('btn-bash-levels')?.addEventListener('click', () => {
     rememberDraft(level)
+    scrollPageTop()
     view = { kind: 'levels', moduleId: level.module }
     paint()
+  })
+  document.getElementById('bash-editor')?.addEventListener('focus', () => {
+    const editor = document.getElementById('bash-editor')
+    if (!(editor instanceof HTMLElement)) return
+    const rect = editor.getBoundingClientRect()
+    const viewport = window.visualViewport
+    const top = viewport?.offsetTop ?? 0
+    const height = viewport?.height ?? window.innerHeight
+    const visible = rect.top >= top + 8 && rect.bottom <= top + height - 8
+    if (!visible) editor.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   })
   document.getElementById('bash-editor')?.addEventListener('input', (event) => {
     const value = (event.target as HTMLTextAreaElement).value
@@ -399,6 +441,7 @@ async function onCheck(level: BmLevel): Promise<void> {
     lastAward = null
   }
   paint()
+  document.getElementById('bash-results')?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
 }
 
 function paintGuide(): void {
@@ -409,6 +452,7 @@ function paintGuide(): void {
   `)
   bindChrome()
   document.getElementById('btn-bash-guide-back')?.addEventListener('click', () => {
+    scrollPageTop()
     view = guideReturn
     paint()
   })

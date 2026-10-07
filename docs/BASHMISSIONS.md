@@ -4,6 +4,8 @@ BashMissions is a selectable book on the Hunter Association **AKCP** tile: hub �
 
 The campaign is the full upstream curriculum: **26 modules, 500 levels**. Each level is playable (briefing, `solution.sh` editor, real test run, hints 1–3, guide, reference answer, debrief, common mistakes). Clearing a level awards that level’s XP once, unlocks the next level, and a finished module shows a certificate. Progress is stored in `bash-missions-save-v1`. It does not write `akcp-save-v1` or `hunter-association-save-v1`.
 
+On a phone the goal banner is open at the top of a level. Once the briefing scrolls up under that card, the card swipes closed so the mission, checks, and editor get the screen. It stays closed while you move around the level, and it opens again at the top of the page. Desktop keeps the same banner, in two columns from 640px up.
+
 ## Grading
 
 Checks run in the browser with [just-bash](https://github.com/vercel-labs/just-bash), a Bash interpreter with an in-memory filesystem. For each `test_cases` entry the game writes `solution.sh` plus the level fixtures, runs `bash ./solution.sh` with the test arguments, and compares stdout and exit status. Comparison modes match the upstream validator: `exact`, `contains`, `ignore_whitespace`, and `regex`. The published curriculum uses `exact`.

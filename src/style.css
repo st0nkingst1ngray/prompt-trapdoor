@@ -28,6 +28,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
+  color-scheme: dark;
 }
 
 body {
@@ -37,7 +38,11 @@ body {
 #app {
   max-width: 920px;
   margin: 0 auto;
-  padding: 1rem 1rem 3rem;
+  padding:
+    calc(1rem + env(safe-area-inset-top, 0px))
+    calc(1rem + env(safe-area-inset-right, 0px))
+    calc(3rem + env(safe-area-inset-bottom, 0px) + var(--keyboard-inset, 0px))
+    calc(1rem + env(safe-area-inset-left, 0px));
 }
 
 h1,
@@ -73,7 +78,7 @@ h3 {
 .hub-grid {
   display: grid;
   gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   margin-top: 1.25rem;
 }
 .tile {
@@ -171,6 +176,7 @@ h3 {
   font-size: 1.05rem;
   font-weight: 600;
   margin-top: 0.15rem;
+  overflow-wrap: anywhere;
 }
 .hud-item.next .val {
   color: var(--accent);
@@ -500,7 +506,7 @@ button.tok-merge:hover {
 .class-grid {
   display: grid;
   gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
 }
 
 .class-card {
@@ -924,7 +930,7 @@ label.slider input[type='range'] {
 #harness-toast {
   position: fixed;
   left: 50%;
-  bottom: 1rem;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
   transform: translate(-50%, 150%);
   max-width: min(92vw, 560px);
   padding: 0.7rem 1rem;
@@ -941,8 +947,8 @@ label.slider input[type='range'] {
 }
 #harness-pill {
   position: fixed;
-  right: 0.75rem;
-  top: 0.75rem;
+  right: calc(0.75rem + env(safe-area-inset-right, 0px));
+  top: calc(0.75rem + env(safe-area-inset-top, 0px));
   padding: 0.3rem 0.7rem;
   border-radius: 999px;
   background: #1e1b4bee;
@@ -1015,6 +1021,47 @@ label.slider input[type='range'] {
   margin-top: 0.35rem;
   font-size: 0.85rem;
 }
+.bash-hud-slot {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  overflow: hidden;
+  max-height: var(--bash-hud-max, 32rem);
+  margin-bottom: 1rem;
+  padding-top: 0.35rem;
+  background: var(--bg);
+  transition: max-height 280ms ease, margin-bottom 280ms ease;
+}
+.bash-hud-slot.is-collapsed {
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  pointer-events: none;
+}
+.bash-hud-clip {
+  overflow: hidden;
+}
+.hud.bash-hud {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  margin-bottom: 0;
+  transition: transform 280ms ease, opacity 220ms ease;
+}
+.bash-hud-slot.is-collapsed .bash-hud {
+  transform: translateY(-105%);
+  opacity: 0;
+}
+.bash-hud-instant,
+.bash-hud-instant .bash-hud {
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bash-hud-slot,
+  .hud.bash-hud {
+    transition: none;
+  }
+}
 .bash-editor,
 #bash-editor,
 #bash-player {
@@ -1022,11 +1069,66 @@ label.slider input[type='range'] {
   margin-top: 0.35rem;
 }
 #bash-editor {
-  min-height: 14rem;
+  min-height: min(14rem, 42dvh);
+  max-width: 100%;
+  resize: vertical;
+  color: #f2f5fa;
+  color-scheme: dark;
+  caret-color: #f2f5fa;
+  background: #0a0f18;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 16px;
   line-height: 1.45;
   tab-size: 2;
+  scroll-margin-top: 0.75rem;
+  scroll-margin-bottom: calc(4.5rem + var(--keyboard-inset, 0px));
+  -webkit-appearance: none;
+  appearance: none;
+}
+#bash-editor:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+#bash-player {
+  font-size: 16px;
+  min-height: 48px;
+  padding: 0.65rem 0.8rem;
+  color: var(--text);
+  background: #0a0f18;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+}
+#bash-brief,
+#bash-guide,
+#bash-debrief,
+#bash-hint-panel,
+#bash-results,
+#bash-certificate,
+.bash-chips {
+  max-width: 100%;
+}
+#akcp code,
+.bash-code,
+.tile .title,
+.tile .sub {
+  overflow-wrap: anywhere;
+}
+.bash-details summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.bash-runbar .btn {
+  flex: 1 1 8rem;
+}
+@media (min-width: 720px) {
+  .bash-runbar .btn {
+    flex: 0 0 auto;
+  }
 }
 .bash-name {
   display: block;
