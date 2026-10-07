@@ -33,6 +33,8 @@ describe('bashmissions on the akcp book picker', () => {
     expect(document.querySelectorAll('[id^="bash-module-"]')).toHaveLength(26)
     expect(document.querySelector<HTMLButtonElement>('#bash-module-2')!.disabled).toBe(true)
     document.getElementById('btn-bash-continue')!.click()
+    expect(document.getElementById('bash-hud-slot')?.classList.contains('is-collapsed')).toBe(false)
+    expect(document.querySelector('.hud.bash-hud')?.textContent).toContain('Your First Script')
     expect(document.getElementById('bash-brief')?.textContent).toContain('Your First Script')
     expect(document.querySelector('textarea#bash-editor')?.textContent).toContain('#!/usr/bin/env bash')
     document.getElementById('btn-bash-hint')!.click()
