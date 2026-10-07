@@ -1,0 +1,2 @@
+export const EXERCISM_PYTHON_LEVELS = 149
+export const EXERCISM_PYTHON_MODULES = 10

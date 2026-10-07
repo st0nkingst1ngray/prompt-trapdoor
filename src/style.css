@@ -1064,11 +1064,17 @@ label.slider input[type='range'] {
 }
 .bash-editor,
 #bash-editor,
+#koan-editor,
+#expy-editor,
+#pyi-editor,
 #bash-player {
   width: 100%;
   margin-top: 0.35rem;
 }
-#bash-editor {
+#bash-editor,
+#koan-editor,
+#expy-editor,
+#pyi-editor {
   min-height: min(14rem, 42dvh);
   max-width: 100%;
   resize: vertical;
@@ -1088,7 +1094,10 @@ label.slider input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
 }
-#bash-editor:focus {
+#bash-editor:focus,
+#koan-editor:focus,
+#expy-editor:focus,
+#pyi-editor:focus {
   outline: none;
   border-color: var(--accent);
 }

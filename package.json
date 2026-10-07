@@ -24,6 +24,7 @@
   "dependencies": {
     "@capacitor/android": "^7.6.9",
     "@capacitor/core": "^7.6.9",
-    "just-bash": "3.6.0"
+    "just-bash": "3.6.0",
+    "pyodide": "0.29.3"
   }
 }
