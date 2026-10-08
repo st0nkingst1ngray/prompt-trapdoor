@@ -2,6 +2,9 @@ import { mountBashMissions, unmountBashMissions } from './bashmissions/ui'
 import { mountExercismPython, unmountExercismPython } from './exercism-python/ui'
 import { mountPyithon, unmountPyithon } from './pyithon/ui'
 import { mountPythonKoans, unmountPythonKoans } from './python-koans/ui'
+import { loadVfs, writeVfs } from './vfs/save'
+import { mountFilesystemBooks, unmountFilesystemBooks } from './vfs/ui'
+import type { VfsLaunch } from './vfs/types'
 import { ACTIVE_BOOK } from './books/osmani2026/index'
 import { gradeActivity, gradeBoss, type AkcpAnswer } from './grade'
 import {
@@ -46,6 +49,7 @@ type View =
 let root: HTMLElement | null = null
 let cb: AkcpCallbacks | null = null
 let view: View = { kind: 'map' }
+let launchLevel: number | null = null
 let beatIndex = 0
 let feedback: { headline: string; rows: { label: string; ok: boolean }[]; tip: string } | null = null
 let showTip = false
@@ -69,6 +73,7 @@ function unmountSideBooks(): void {
 }
 
 export function unmountAkcp(): void {
+  unmountFilesystemBooks()
   unmountSideBooks()
   view = { kind: 'map' }
   beatIndex = 0
@@ -149,6 +154,7 @@ function bindHub(): void {
 
 function paint(): void {
   if (!root || !cb) return
+  if (view.kind !== 'books') unmountFilesystemBooks()
   const save = loadAkcp()
   if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books' && view.kind !== 'koans' && view.kind !== 'exercism' && view.kind !== 'pyithon') {
     paintPenalty(save.penaltyPendingId)
@@ -224,12 +230,53 @@ function paintMap(save: AkcpSave): void {
 }
 
 function paintBooks(): void {
+  if (!root || !cb) return
+  unmountFilesystemBooks()
+  unmountSideBooks()
+  if (!loadVfs().simplePicker) {
+    mountFilesystemBooks(root, {
+      escapeHtml: esc,
+      onHub: () => cb?.onHub(),
+      onSimple: () => {
+        writeVfs({ ...loadVfs(), simplePicker: true })
+        paintBooks()
+      },
+      onOpen: (launch) => openFromVfs(launch),
+    })
+    return
+  }
+  paintBooksPicker()
+}
+
+function openFromVfs(launch: VfsLaunch): void {
+  if (launch.book === 'osmani') {
+    view = { kind: 'wizard', sectionId: launch.target, pageIndex: launch.pageIndex ?? 0 }
+    paint()
+    return
+  }
+  const level = Number(launch.target)
+  launchLevel = Number.isFinite(level) ? level : null
+  if (launch.book === 'bash') view = { kind: 'bash' }
+  else if (launch.book === 'koans') view = { kind: 'koans' }
+  else if (launch.book === 'exercism') view = { kind: 'exercism' }
+  else view = { kind: 'pyithon' }
+  paint()
+}
+
+function takeLaunchLevel(): number | undefined {
+  const level = launchLevel
+  launchLevel = null
+  return level && level > 0 ? level : undefined
+}
+
+function paintBooksPicker(): void {
   root!.innerHTML = shell(`
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Choose a book</h1>
       <p class="muted">Osmani stays on the protocol map. BashMissions and the three Python books are graded campaigns.</p>
     </header>
+    <div class="actions"><button class="btn secondary" id="akcp-books-fs" type="button">Filesystem</button></div>
     <div class="hub-grid">
       <button class="tile" id="akcp-book-osmani" type="button">
         <div class="emoji">📗</div>
@@ -264,6 +311,10 @@ function paintBooks(): void {
     </div>
   `)
   bindHub()
+  document.getElementById('akcp-books-fs')?.addEventListener('click', () => {
+    writeVfs({ ...loadVfs(), simplePicker: false })
+    paintBooks()
+  })
   document.getElementById('akcp-book-osmani')?.addEventListener('click', () => {
     view = { kind: 'map' }
     paint()
@@ -304,25 +355,29 @@ function sideCallbacks(unmount: () => void) {
 function paintBash(): void {
   if (!root || !cb) return
   unmountSideBooks()
-  mountBashMissions(root, sideCallbacks(unmountBashMissions))
+  const levelId = takeLaunchLevel()
+  mountBashMissions(root, sideCallbacks(unmountBashMissions), levelId ? { levelId } : undefined)
 }
 
 function paintKoans(): void {
   if (!root || !cb) return
   unmountSideBooks()
-  mountPythonKoans(root, sideCallbacks(unmountPythonKoans))
+  const levelId = takeLaunchLevel()
+  mountPythonKoans(root, sideCallbacks(unmountPythonKoans), levelId ? { levelId } : undefined)
 }
 
 function paintExercism(): void {
   if (!root || !cb) return
   unmountSideBooks()
-  mountExercismPython(root, sideCallbacks(unmountExercismPython))
+  const levelId = takeLaunchLevel()
+  mountExercismPython(root, sideCallbacks(unmountExercismPython), levelId ? { levelId } : undefined)
 }
 
 function paintPyithon(): void {
   if (!root || !cb) return
   unmountSideBooks()
-  mountPyithon(root, sideCallbacks(unmountPyithon))
+  const levelId = takeLaunchLevel()
+  mountPyithon(root, sideCallbacks(unmountPyithon), levelId ? { levelId } : undefined)
 }
 
 function paintWizard(sectionId: string, pageIndex: number): void {

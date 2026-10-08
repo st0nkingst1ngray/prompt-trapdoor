@@ -28,6 +28,7 @@ describe('python books on the AKCP picker', () => {
   it('lists Osmani, BashMissions, and the three Python books', () => {
     mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
     document.getElementById('btn-akcp-books')!.click()
+    document.getElementById('akcp-books-simple')!.click()
     expect(document.getElementById('akcp-book-osmani')).not.toBeNull()
     expect(document.getElementById('akcp-book-bash')).not.toBeNull()
     expect(document.getElementById('akcp-book-koans')).not.toBeNull()
@@ -43,6 +44,7 @@ describe('python books on the AKCP picker', () => {
     localStorage.setItem('bash-missions-save-v1', 'bash')
     mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
     document.getElementById('btn-akcp-books')!.click()
+    document.getElementById('akcp-books-simple')!.click()
     document.getElementById('akcp-book-pyithon')!.click()
     await vi.waitFor(() => expect(document.getElementById('btn-pyi-continue')).not.toBeNull())
     expect(document.querySelectorAll('[id^="pyi-module-"]')).toHaveLength(3)
@@ -74,6 +76,7 @@ describe('python books on the AKCP picker', () => {
     const exercismBook = exercism as { levels: { answer: string }[] }
     mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
     document.getElementById('btn-akcp-books')!.click()
+    document.getElementById('akcp-books-simple')!.click()
     document.getElementById('akcp-book-koans')!.click()
     await vi.waitFor(() => expect(document.getElementById('btn-koan-continue')).not.toBeNull())
     expect(document.querySelectorAll('[id^="koan-module-"]')).toHaveLength(37)

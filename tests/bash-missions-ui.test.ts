@@ -12,6 +12,7 @@ function escapeHtml(value: string): string {
 
 async function openBash(): Promise<void> {
   document.getElementById('btn-akcp-books')!.click()
+  document.getElementById('akcp-books-simple')!.click()
   document.getElementById('akcp-book-bash')!.click()
   await vi.waitFor(() => {
     expect(document.getElementById('btn-bash-continue')).not.toBeNull()

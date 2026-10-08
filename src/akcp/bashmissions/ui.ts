@@ -37,6 +37,7 @@ let host: HTMLElement | null = null
 let callbacks: BashCallbacks | null = null
 let curriculum: Curriculum | null = null
 let view: BashView = { kind: 'modules' }
+let startLevelId: number | null = null
 let lastReport: { levelId: number; report: GradeReport } | null = null
 let lastAward: { levelId: number; xpGained: number; certificate: boolean } | null = null
 let checking = false
@@ -44,9 +45,10 @@ let loadError = ''
 let guideReturn: BashView = { kind: 'modules' }
 let releasePlayChrome: (() => void) | null = null
 
-export function mountBashMissions(root: HTMLElement, next: BashCallbacks): void {
+export function mountBashMissions(root: HTMLElement, next: BashCallbacks, start?: { levelId?: number }): void {
   host = root
   callbacks = next
+  startLevelId = start?.levelId ?? null
   view = { kind: 'modules' }
   lastReport = null
   lastAward = null
@@ -60,6 +62,7 @@ export function unmountBashMissions(): void {
   releasePlayChrome = null
   host = null
   callbacks = null
+  startLevelId = null
   view = { kind: 'modules' }
   lastReport = null
   lastAward = null
@@ -134,6 +137,7 @@ function scrollPageTop(): void {
 
 async function boot(): Promise<void> {
   const root = host
+  const requested = startLevelId
   if (!root) return
   root.innerHTML = shell('<p id="bash-loading">Loading BashMissions…</p>')
   bindChrome()
@@ -141,6 +145,7 @@ async function boot(): Promise<void> {
     curriculum = await ensureCurriculum()
     if (host !== root) return
     if (localStorage.getItem('bash-missions-save-v1') == null) writeBashMissions(loadBashMissions())
+    if (requested && levelUnlocked(loadBashMissions(), requested)) view = { kind: 'play', levelId: requested }
     paint()
   } catch (error) {
     if (host !== root) return
