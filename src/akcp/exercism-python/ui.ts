@@ -18,7 +18,7 @@ import {
 
 const PREFIX = 'expy'
 
-export function mountExercismPython(root: HTMLElement, callbacks: CodeBookCallbacks): void {
+export function mountExercismPython(root: HTMLElement, callbacks: CodeBookCallbacks, start?: { levelId?: number }): void {
   mountCodeBook(root, callbacks, {
     prefix: PREFIX,
     title: 'Exercism Python',
@@ -45,6 +45,7 @@ export function mountExercismPython(root: HTMLElement, callbacks: CodeBookCallba
     levelById: exercismLevelById,
     moduleById: exercismModuleById,
     grade: gradeExercismPython,
+    startLevelId: start?.levelId,
   })
 }
 

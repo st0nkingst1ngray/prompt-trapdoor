@@ -33,6 +33,8 @@ export interface CodeBookApi {
   levelById: (book: CodeCurriculum, id: number) => CodeLevel
   moduleById: (book: CodeCurriculum, id: number) => CodeModule
   grade: (book: CodeCurriculum, level: CodeLevel, source: string) => Promise<GradeReport>
+  /** When set, the book opens on this level after the catalog loads. */
+  startLevelId?: number
 }
 
 type CodeProgressAward = (
@@ -150,6 +152,10 @@ async function boot(session: Session): Promise<void> {
     session.curriculum = await session.api.ensureCurriculum()
     if (session.host !== root || session.token !== token) return
     if (localStorage.getItem(session.api.saveKey) == null) session.api.write(session.api.load())
+    const start = session.api.startLevelId
+    if (start && session.api.levelUnlocked(session.api.load(), start)) {
+      session.view = { kind: 'play', levelId: start }
+    }
     paint(session)
   } catch (error) {
     if (session.host !== root || session.token !== token) return

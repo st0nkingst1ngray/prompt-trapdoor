@@ -18,7 +18,7 @@ import {
 
 const PREFIX = 'koan'
 
-export function mountPythonKoans(root: HTMLElement, callbacks: CodeBookCallbacks): void {
+export function mountPythonKoans(root: HTMLElement, callbacks: CodeBookCallbacks, start?: { levelId?: number }): void {
   mountCodeBook(root, callbacks, {
     prefix: PREFIX,
     title: 'Python Koans',
@@ -45,6 +45,7 @@ export function mountPythonKoans(root: HTMLElement, callbacks: CodeBookCallbacks
     levelById: koanLevelById,
     moduleById: koanModuleById,
     grade: gradePythonKoans,
+    startLevelId: start?.levelId,
   })
 }
 

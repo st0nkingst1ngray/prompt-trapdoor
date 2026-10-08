@@ -1187,3 +1187,136 @@ label.slider input[type='range'] {
 #bash-debrief p {
   font-size: 1.05rem;
 }
+
+.vfs-screen,
+.vfs-shelf,
+.vfs-list,
+.vfs-term,
+.vfs-log,
+.vfs-crumbs {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.vfs-progress {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.vfs-stack,
+.vfs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.vfs-shelf h2 {
+  font-size: 1.15rem;
+  margin-top: 0.25rem;
+}
+.vfs-continue,
+.vfs-pin-jump,
+.vfs-stack .btn {
+  width: 100%;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.vfs-search,
+.vfs-form,
+.vfs-crumbs,
+.vfs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  margin: 0.6rem 0;
+}
+.vfs-search input,
+.vfs-input {
+  flex: 1 1 8rem;
+  min-width: 0;
+  min-height: 48px;
+  font-size: 16px;
+  color: var(--text);
+  background: #0a0f18;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0.55rem 0.75rem;
+}
+.vfs-crumbs button,
+.vfs-row,
+.vfs-pin {
+  min-height: 48px;
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+}
+.vfs-crumbs button {
+  padding: 0.4rem 0.7rem;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.vfs-item {
+  display: flex;
+  gap: 0.35rem;
+  align-items: stretch;
+  min-width: 0;
+}
+.vfs-row {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  text-align: left;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+.vfs-perm {
+  flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.vfs-name {
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+.vfs-pin {
+  flex: 0 0 48px;
+  width: 48px;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+.vfs-pin.is-on {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+.vfs-term {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--border);
+  background: #0a0f18;
+}
+.vfs-log {
+  max-height: 36vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 0 0.6rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.vfs-log p {
+  margin: 0 0 0.35rem;
+}
+.vfs-prompt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.vfs-prompt.is-root,
+.vfs-log .is-root {
+  color: var(--danger);
+}

@@ -18,7 +18,7 @@ import {
 
 const PREFIX = 'pyi'
 
-export function mountPyithon(root: HTMLElement, callbacks: CodeBookCallbacks): void {
+export function mountPyithon(root: HTMLElement, callbacks: CodeBookCallbacks, start?: { levelId?: number }): void {
   mountCodeBook(root, callbacks, {
     prefix: PREFIX,
     title: 'pyi-thon',
@@ -45,6 +45,7 @@ export function mountPyithon(root: HTMLElement, callbacks: CodeBookCallbacks): v
     levelById: pyithonLevelById,
     moduleById: pyithonModuleById,
     grade: gradePyithon,
+    startLevelId: start?.levelId,
   })
 }
 
