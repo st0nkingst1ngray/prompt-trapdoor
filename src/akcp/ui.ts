@@ -1,3 +1,4 @@
+import { mountAgentHandbook, unmountAgentHandbook } from './agent-handbook/ui'
 import { mountBashMissions, unmountBashMissions } from './bashmissions/ui'
 import { mountExercismPython, unmountExercismPython } from './exercism-python/ui'
 import { mountPyithon, unmountPyithon } from './pyithon/ui'
@@ -38,6 +39,7 @@ type View =
   | { kind: 'koans' }
   | { kind: 'exercism' }
   | { kind: 'pyithon' }
+  | { kind: 'agents' }
   | { kind: 'wizard'; sectionId: string; pageIndex: number }
   | { kind: 'quests'; sectionId: string }
   | { kind: 'quest'; sectionId: string; questId: string }
@@ -66,6 +68,7 @@ function unmountSideBooks(): void {
   unmountPythonKoans()
   unmountExercismPython()
   unmountPyithon()
+  unmountAgentHandbook()
 }
 
 export function unmountAkcp(): void {
@@ -150,7 +153,7 @@ function bindHub(): void {
 function paint(): void {
   if (!root || !cb) return
   const save = loadAkcp()
-  if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books' && view.kind !== 'koans' && view.kind !== 'exercism' && view.kind !== 'pyithon') {
+  if (save.penaltyPendingId && view.kind !== 'bash' && view.kind !== 'books' && view.kind !== 'koans' && view.kind !== 'exercism' && view.kind !== 'pyithon' && view.kind !== 'agents') {
     paintPenalty(save.penaltyPendingId)
     return
   }
@@ -172,6 +175,10 @@ function paint(): void {
   }
   if (view.kind === 'pyithon') {
     paintPyithon()
+    return
+  }
+  if (view.kind === 'agents') {
+    paintAgents()
     return
   }
   if (view.kind === 'map') paintMap(save)
@@ -228,7 +235,7 @@ function paintBooks(): void {
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Choose a book</h1>
-      <p class="muted">Osmani stays on the protocol map. BashMissions and the three Python books are graded campaigns.</p>
+      <p class="muted">Osmani stays on the protocol map. BashMissions, the Python books, and the agent handbook are graded campaigns.</p>
     </header>
     <div class="hub-grid">
       <button class="tile" id="akcp-book-osmani" type="button">
@@ -253,6 +260,12 @@ function paintBooks(): void {
         <div class="emoji">🧩</div>
         <div class="title">Exercism Python</div>
         <div class="sub">149 exercises. Concept track, then practice. The included tests grade you.</div>
+        <span class="badge">Play</span>
+      </button>
+      <button class="tile" id="akcp-book-agents" type="button">
+        <div class="emoji">🤝</div>
+        <div class="title">Optimal AI agents</div>
+        <div class="sub">Seven decisions from the freeCodeCamp handbook. One agent until the score and the work say otherwise.</div>
         <span class="badge">Play</span>
       </button>
       <button class="tile" id="akcp-book-pyithon" type="button">
@@ -282,6 +295,10 @@ function paintBooks(): void {
   })
   document.getElementById('akcp-book-pyithon')?.addEventListener('click', () => {
     view = { kind: 'pyithon' }
+    paint()
+  })
+  document.getElementById('akcp-book-agents')?.addEventListener('click', () => {
+    view = { kind: 'agents' }
     paint()
   })
 }
@@ -323,6 +340,12 @@ function paintPyithon(): void {
   if (!root || !cb) return
   unmountSideBooks()
   mountPyithon(root, sideCallbacks(unmountPyithon))
+}
+
+function paintAgents(): void {
+  if (!root || !cb) return
+  unmountSideBooks()
+  mountAgentHandbook(root, sideCallbacks(unmountAgentHandbook))
 }
 
 function paintWizard(sectionId: string, pageIndex: number): void {
