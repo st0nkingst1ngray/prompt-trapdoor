@@ -12,6 +12,7 @@ import {
   restoreHeist,
   unmountHeist,
 } from './tokenHeist'
+import { clearAgentHandbookSave } from './akcp/agent-handbook/save'
 import { clearBashMissionsSave } from './akcp/bashmissions/save'
 import { clearExercismPythonSave } from './akcp/exercism-python/save'
 import { clearPyithonSave } from './akcp/pyithon/save'
@@ -757,6 +758,7 @@ startHarnessPolling(`${import.meta.env.BASE_URL}harness-status.json`, () => {
   clearPythonKoansSave()
   clearExercismPythonSave()
   clearPyithonSave()
+  clearAgentHandbookSave()
   resetGateUi()
   resetHarnessUi()
   unmountHeist()
