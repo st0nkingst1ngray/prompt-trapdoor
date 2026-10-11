@@ -28,6 +28,9 @@ const STAT_LABELS: Record<AkcpStatId, string> = {
 
 const SIM = 'Training sim. This model is fake and local. This is not a request to touch a real system.'
 
+/** Official essay. The full text stays on Osmani’s site; quests stay in this tab. */
+export const AI_NATIVE_ESSAY_URL = 'https://addyo.substack.com/p/the-ai-native-software-engineer'
+
 type View =
   | { kind: 'map' }
   | { kind: 'books' }
@@ -115,7 +118,10 @@ function esc(value: string): string {
 
 function shell(inner: string): string {
   return `<div class="screen active" id="akcp">
-    <div class="actions"><button class="btn ghost" id="btn-akcp-hub" type="button">Back to Association</button></div>
+    <div class="actions">
+      <button class="btn ghost" id="btn-akcp-hub" type="button">Back to Association</button>
+      <a class="btn ghost" id="akcp-native-essay" href="${AI_NATIVE_ESSAY_URL}" target="_blank" rel="noopener noreferrer">Read the full essay</a>
+    </div>
     ${inner}
     <p class="muted akcp-sim">${esc(SIM)}</p>
   </div>`
@@ -175,7 +181,7 @@ function paintMap(save: AkcpSave): void {
     <header class="hub-header">
       <p class="eyebrow">Open world · optional</p>
       <h1>Advanced Knowledge Collecting Protocol</h1>
-      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road. Books switches to BashMissions.</p>
+      <p class="muted">Read a page, then make one technical call. Rank stays on the E–S road. Books switches to BashMissions. The full essay opens beside this tab.</p>
     </header>
     <div class="actions"><button class="btn secondary" id="btn-akcp-books" type="button">Books</button></div>
     <div id="akcp-stats" class="rank-card">${esc(stats)}</div>

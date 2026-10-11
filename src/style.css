@@ -271,10 +271,22 @@ button.btn.secondary {
 button.btn.secondary:hover {
   background: #475569;
 }
-button.btn.ghost {
+button.btn.ghost,
+a.btn.ghost {
   background: transparent;
   border: 2px solid var(--border);
   color: var(--muted);
+}
+a.btn.ghost {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.05rem;
+  min-height: 48px;
 }
 button.btn.ok {
   background: #15803d;
