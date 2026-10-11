@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { mountAkcp } from '../src/akcp/ui'
+import { AI_NATIVE_ESSAY_URL, mountAkcp } from '../src/akcp/ui'
 import { clearAkcpSave, loadAkcp, writeAkcp } from '../src/akcp/save'
 
 function escapeHtml(s: string): string {
@@ -12,6 +12,17 @@ beforeEach(() => {
 })
 
 describe('akcp wizard', () => {
+  it('keeps The AI-Native Software Engineer on Osmani’s site beside the quest', () => {
+    mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
+    const link = document.querySelector<HTMLAnchorElement>('#akcp-native-essay')!
+    expect(link.href).toBe(AI_NATIVE_ESSAY_URL)
+    expect(link.target).toBe('_blank')
+    expect(link.rel).toContain('noopener')
+    document.querySelector<HTMLButtonElement>('#akcp-section-intro')!.click()
+    expect(document.querySelector('#akcp-native-essay')).not.toBeNull()
+    expect(document.body.textContent).not.toContain('AI Tools and Platforms - from prototyping to production')
+  })
+
   it('reads intro pages in order and then unlocks specs', () => {
     mountAkcp(document.getElementById('app')!, { onHub: () => {}, escapeHtml })
     expect(document.querySelector<HTMLButtonElement>('#akcp-section-specs')!.disabled).toBe(true)
